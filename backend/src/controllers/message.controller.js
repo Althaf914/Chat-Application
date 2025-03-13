@@ -40,11 +40,12 @@ export const sendMessage= async (req, res) => {
         const {id: receiverId}= req.params;
         const senderId= req.user._id;
 
-        let imageUrl;
+        let imageUrl= null;
         if(image){
-            const uploadResponse= cloudinary.uploader.upload(image);
-            imageUrl= (await uploadResponse).secure_url;
+            const uploadResponse = await cloudinary.uploader.upload(image);
+            imageUrl = uploadResponse.secure_url;
         }
+
 
         const newMessage= new Message({
             senderId,
@@ -54,6 +55,8 @@ export const sendMessage= async (req, res) => {
         });
 
         await newMessage.save();
+
+        // console.log(newMessage);
 
         //TODO: real time functionality goes here => socket.io
 
